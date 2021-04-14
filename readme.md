@@ -90,14 +90,4 @@ alembic upgrade head
 Update Db and insert master data:
 python run_db.py auto
 
-Ff give error in fastapi_users, add fastapi_users to revision file
-
-or
-
-python run_db_mutator.py
-python run_db_data.py
-
-
-
-docker-compose run campaign_backend alembic revision --autogenerate -m 'Init'
-docker-compose run campaign_backend alembic upgrade head
+If give error in fastapi_users, add fastapi_users to revision file
