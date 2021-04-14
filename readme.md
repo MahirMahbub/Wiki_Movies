@@ -68,8 +68,8 @@ password: secret
     password: secret
 
 
-API: Campaign
-http://localhost:6003/docs
+API: 
+http://localhost:7003/docs
 
 
 DB:
@@ -86,8 +86,11 @@ Add new Db migration and update:
 alembic revision --autogenerate -m 'Init'
 alembic upgrade head
 
+
 Update Db and insert master data:
 python run_db.py auto
+
+Ff give error in fastapi_users, add fastapi_users to revision file
 
 or
 
