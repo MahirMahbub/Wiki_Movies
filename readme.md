@@ -51,10 +51,7 @@ https://stackoverflow.com/questions/44785585/how-to-delete-all-local-docker-imag
 docker system prune -a --volumes
 
 
-PgAdmin
-http://localhost:6002/login
-user: admin@linuxhint.com
-password: secret
+DB credentials:
 
     add new server
     host name: db_campaign
@@ -76,7 +73,7 @@ Update Db and insert master data:
 python run_db.py auto
 python run_db.py data
 
-# The parsing of data and  loading data to database will happen while starting the fastapi server
+# The parsing of data and  loading of data to the database will happen while starting the fastapi server
 
 For manual upload of data with parsing  
 python serve.py
