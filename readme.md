@@ -9,7 +9,6 @@ inside **\backend** folder
 
 ### Q) Where is the .env?
 inside **\backend** folder
-for devlopment rename **dev.env** to **.env**
 
 # Run The Project in Docker:
 ### Q) What need to install?
@@ -28,7 +27,7 @@ Check **docker-compose.yml** file
 
 # Application Page:
 ### Hosted at Docker
-[http://localhost:6003/docs](http://localhost:6003/docs)
+[http://localhost:7003/docs](http://localhost:7003/docs)
 
 
 ### Dev
@@ -37,18 +36,15 @@ Check **docker-compose.yml** file
 pip install -r requirements.txt
 pip list
 
-python run_app.py
 
 
 docker-compose build
 docker-compose up
 docker-compose up -d
+ 
+for debug run
+python debug.py
 
-
-docker-compose down
-docker volume ls
-docker volume rm keycloak_db-data
-docker-compose up
 
 Remove everything from docker
 https://stackoverflow.com/questions/44785585/how-to-delete-all-local-docker-images
@@ -62,7 +58,7 @@ password: secret
 
     add new server
     host name: db_campaign
-    port: 5432
+    port: 54320
     db: postgres
     user: admin
     password: secret
@@ -75,19 +71,22 @@ http://localhost:7003/docs
 DB:
 pool_size and max_overflow https://stackoverflow.com/a/9999411
 
-DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;
-GRANT ALL ON SCHEMA public TO campaign;
-GRANT ALL ON SCHEMA public TO public;
-COMMENT ON SCHEMA public IS 'standard public schema'
-
-
-Add new Db migration and update:
-alembic revision --autogenerate -m 'Init'
-alembic upgrade head
-
 
 Update Db and insert master data:
 python run_db.py auto
+python run_db.py data
 
-If give error in fastapi_users, add fastapi_users to revision file
+# The parsing of data and  loading data to database will happen while starting the fastapi server
+
+For manual upload of data with parsing  
+python serve.py
+When the database is ready with the parsed data, "data_loader" table will have "false" status for "Movie Data Loading" so that the data parsing & loading never happens again.
+
+# API endpoints
+http://localhost:7003/movies?count={}&page={}
+http://localhost:7003/movie/{}
+
+For Code for Data Parsing and Data Upload to database, see:
+app/custom_classes/data_loader/*
+Used Chain of Responsibility, Repository.
+
