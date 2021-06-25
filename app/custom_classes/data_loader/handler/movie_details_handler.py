@@ -1,5 +1,6 @@
 import re
-from typing import Any, List, Optional
+from pprint import pprint
+from typing import Any, List, Optional, Tuple
 from typing import Dict
 
 import requests as requests
@@ -11,11 +12,13 @@ from app.custom_classes.data_loader.handler.abstract_handler import AbstractHand
 
 
 class MovieDetailsHandler(AbstractHandler):
-    def execute(self, request_data: Dict[Any, Any]) -> List[Dict[Any, Any]]:
+    def execute(self, request_data: List[Dict[Any, Any]]) -> Tuple[List[Dict[Any, Any]], List[Dict[Any, Any]]]:
         movies_details_list: List[Dict[Any, Any]] = []
         for movie_data in request_data:
+            print("Parsing data for: ", movie_data["Film"])
             movies_details_list.append(self.get_film_details(movie_data['Wiki Link']))
-        return movies_details_list
+        pprint(movies_details_list)
+        return movies_details_list, request_data
 
     @staticmethod
     def get_film_details(url: str) -> Dict[Any, Any]:
@@ -38,9 +41,9 @@ class MovieDetailsHandler(AbstractHandler):
                     property_value_list: List[Dict[str, str]] = []
                     for td in tr.find_all('td'):
                         if td.findAll('li'):
-                            property_value_list = MovieDetailsHandler.parse_listed_html(property_value_list, td)
+                            property_value_list += MovieDetailsHandler.parse_listed_html(td)
                         else:
-                            property_value_list = MovieDetailsHandler.parse_non_listed_html(property_value_list, td)
+                            property_value_list += MovieDetailsHandler.parse_non_listed_html(td)
                     movie_details[property_name] = property_value_list
         # print(movie_details)
         return movie_details
@@ -50,7 +53,8 @@ class MovieDetailsHandler(AbstractHandler):
         return obj_.text.replace(u'\xa0', u' ')
 
     @staticmethod
-    def parse_non_listed_html(property_value_list: List[Dict[str, str]], td: Any) -> List[Dict[str, str]]:
+    def parse_non_listed_html(td: Any) -> List[Dict[str, str]]:
+        _property_value_list = []
         if td.findAll("sup"):
             for sup in td.findAll("sup"):
                 sup.decompose()
@@ -60,12 +64,13 @@ class MovieDetailsHandler(AbstractHandler):
             link = td.find('a')["href"]
             if link[0:5] == "/wiki":
                 link = r"https://en.wikipedia.org/" + link
-        property_value_list.append({"value": value,
+        _property_value_list.append({"value": value,
                                     "url": link})
-        return property_value_list
+        return _property_value_list
 
     @staticmethod
-    def parse_listed_html(property_value_list: List[Dict[str, str]], td: Any) -> List[Dict[str, str]]:
+    def parse_listed_html(td: Any) -> List[Dict[str, str]]:
+        _property_value_list = []
         for li in td.findAll('li'):
             link: Optional[str, None] = None
             if li.find('a', href=re.compile(r'^(?!.*?#cite).*')):
@@ -73,9 +78,9 @@ class MovieDetailsHandler(AbstractHandler):
                 if link[0:5] == "/wiki":
                     link = r"https://en.wikipedia.org/" + link
             value: str = MovieDetailsHandler.clean_unicode_text(li)
-            property_value_list.append({"value": value,
+            _property_value_list.append({"value": value,
                                         "url": link})
-            return property_value_list
+        return _property_value_list
 
     @staticmethod
     def get_table_data_from_html(request_handler):

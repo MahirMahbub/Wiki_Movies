@@ -13,7 +13,7 @@ from app.custom_classes.data_loader.handler.abstract_handler import AbstractHand
 
 
 class MovieListHandler(AbstractHandler):
-    def execute(self, request_data: str) -> Dict[Any, Any]:
+    def execute(self, request_data: str) -> List[Dict[Any, Any]]:
         request_handler: request = requests.get(request_data)
         html_table: Tag = BeautifulSoup(features="lxml", markup=request_handler.text).find('table')
         request_handler.close()

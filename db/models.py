@@ -10,8 +10,8 @@ class DataLoader(Base):
     status = Column(Boolean, default=False)
 
 
-class MovieListData(Base):
-    __tablename__ = "movie_list_data"
+class MovieData(Base):
+    __tablename__ = "movie_data"
     id = Column(Integer, primary_key=True, index=True)
     film_name = Column(String, index=True)
     years = Column(String, index=True)

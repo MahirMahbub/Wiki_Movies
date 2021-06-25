@@ -1,3 +1,6 @@
+import logging
+
+from app.custom_classes.data_loader.handler.db_handler import DBHandler
 from app.custom_classes.data_loader.handler.movie_details_handler import MovieDetailsHandler
 from app.custom_classes.data_loader.handler.movie_list_handler import MovieListHandler
 
@@ -20,8 +23,11 @@ class CreateData(object):
     def get_chain_of_responsibility(self):
         movie_list = MovieListHandler()
         movie_details = MovieDetailsHandler()
-        movie_details.set_prev(movie_list)
-        movie_details.handle(f"https://en.wikipedia.org/wiki/List_of_Academy_Award-winning_films")
+        db_operation = DBHandler()
+        db_operation.set_prev(movie_details).set_prev(movie_list)
+        response = db_operation.handle(f"https://en.wikipedia.org/wiki/List_of_Academy_Award-winning_films")
+        if response:
+            logging.info("Movie Data Has been Loaded....")
 
 
 
