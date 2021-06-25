@@ -4,6 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.create_data import CreateData
+from app.cruds.data_loader import DataLoaderCrud
+from app.routes import movies
+from db.database import SessionLocal
 
 app = FastAPI()
 
@@ -47,16 +50,21 @@ app.add_middleware(
 app = FastAPI()
 
 # API routes
-# app.include_router(
-#     ocr_character_seperator.router,
-#     prefix="/hello",
-#     tags=["Hello"],
-# )
+app.include_router(
+    movies.router,
+    tags=["Movies"]
+)
 
-import uvicorn
+db = SessionLocal()
+
 
 # if __name__ == '__main__':
 #     uvicorn.run(app='app:app', reload=True, port="7003", host="0.0.0.0")
 @app.on_event("startup")
 async def startup_event():
-    CreateData.get_instance().get_chain_of_responsibility()
+    is_to_load = DataLoaderCrud(session=db).get(activity_name="Movie Data Loading")
+    if is_to_load is not None:
+        if is_to_load.status==True:
+            CreateData.get_instance().get_chain_of_responsibility()
+            DataLoaderCrud(session=db).update_status(activity_name="Movie Data Loading", status=False)
+            db.commit()
