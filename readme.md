@@ -81,9 +81,12 @@ When the database is ready with the parsed data, "data_loader" table will have "
 
 # API endpoints
 http://localhost:7003/movies?count={}&page={}
+
 http://localhost:7003/movie/{}
 
 For Code for Data Parsing and Data Upload to database, see:
+
 app/custom_classes/data_loader/*
+
 Used Chain of Responsibility, Repository.
 
