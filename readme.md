@@ -76,7 +76,9 @@ python run_db.py data
 # The parsing of data and  loading of data to the database will happen while starting the fastapi server
 
 For manual upload of data with parsing  
+
 python serve.py
+
 When the database is ready with the parsed data, "data_loader" table will have "false" status for "Movie Data Loading" so that the data parsing & loading never happens again.
 
 # API endpoints
