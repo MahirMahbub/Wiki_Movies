@@ -19,7 +19,7 @@ class AppConfig:
     # Set App Host and Port
     PORT = 8000
     APP_HOST_NAME = '127.0.0.1'
-    APP_HOST_PORT = os.getenv("APP_HOST_PORT", PORT)
+    APP_HOST_PORT = int(os.getenv("APP_HOST_PORT", PORT))
 
     # DB Configurations
     DB_HOST = ""

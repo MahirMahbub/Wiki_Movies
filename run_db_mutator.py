@@ -30,6 +30,8 @@ def remove_local_migrations():
 def apply_migations():
     os.system("alembic upgrade head")
 
+def create_migration():
+    os.system("alembic revision --autogenerate")
 
 def create_migrations_and_apply():
     os.system("alembic revision --autogenerate")

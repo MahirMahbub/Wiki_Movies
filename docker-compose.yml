@@ -3,7 +3,7 @@ version: "3.8"
 services:
   db:
       image: postgres:12.2
-      container_name:  OCR-Postgres
+      container_name:  Wiki-Postgres
       restart: always
       environment:
         POSTGRES_DB: postgres
@@ -13,11 +13,11 @@ services:
       volumes:
         - db-data:/var/lib/postgresql/data
       ports:
-        - "54321:5432"
+        - 54320:5432
 
-  ocr_backend:
+  wiki_movie_backend:
     build: .
-    container_name:  OCR
+    container_name:  WikiMovie
     command: bash -c "uvicorn app.main:app --host 0.0.0.0 --port 7003 --reload"
     volumes:
       - .:/srv/ocr_backend
@@ -27,15 +27,15 @@ services:
       - db
     env_file: .env
 
-  ocr_db_mutator:
+  wiki_db_mutator:
     build: .
-    container_name:  ocr-Db-Mutator
+    container_name:  wiki-Db-Mutator
     command: bash -c "python run_db.py auto"
     volumes:
-      - .:/srv/ocr_backend
+      - .:/srv/wiki_movie_backend
     env_file: .env
     depends_on:
-      - ocr_backend
+      - wiki_movie_backend
 
 volumes:
   db-data:
