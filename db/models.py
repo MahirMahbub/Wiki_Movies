@@ -1,44 +1,29 @@
-from fastapi_users import models as user_models, FastAPIUsers
-from fastapi_users.authentication import JWTAuthentication
-from fastapi_users.db import SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
+from sqlalchemy import Boolean, Column, Integer, String
 
-from .database import Base, database
+from db.database import Base
 
 
-class User(user_models.BaseUser):
-    pass
+class DataLoader(Base):
+    __tablename__ = "data_loader"
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    activity_name = Column(String, nullable=False)
+    status = Column(Boolean, default=False)
 
 
-class UserCreate(user_models.BaseUserCreate):
-    # @validator('password')
-    # def valid_password(cls, v: str):
-    #     if len(v) < 6:
-    #         raise ValueError('Password should be at least 6 characters')
-    #     return v
-    pass
+class MovieListData(Base):
+    __tablename__ = "movie_list_data"
+    id = Column(Integer, primary_key=True, index=True)
+    film_name = Column(String, index=True)
+    years = Column(String, index=True)
+    awards = Column(String)
+    nomination = Column(String)
+    wiki_url = Column(String)
 
 
-class UserUpdate(User, user_models.BaseUserUpdate):
-    pass
-
-
-class UserDB(User, user_models.BaseUserDB):
-    pass
-
-
-class UserTable(Base, SQLAlchemyBaseUserTable):
-    pass
-
-
-SECRET = "SECRET"
-users = UserTable.__table__
-user_db = SQLAlchemyUserDatabase(UserDB, database, users)
-jwt_authentication = JWTAuthentication(secret=SECRET, lifetime_seconds=3600, tokenUrl="/auth/jwt/login")
-fastapi_users = FastAPIUsers(
-    user_db,
-    [jwt_authentication],
-    User,
-    UserCreate,
-    UserUpdate,
-    UserDB,
-)
+class MovieDetails(Base):
+    __tablename__ = "movie_details"
+    id = Column(Integer, primary_key=True, index=True)
+    property_name = Column(String, index=True)
+    value = Column(String, nullable=True)
+    url = Column(String, nullable=True)
+    movie_id = Column(Integer)  # Type MovieListData
