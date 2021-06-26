@@ -79,7 +79,7 @@ For manual upload of data with parsing run in docker terminal:
 
 python parse.py 
 
-NB: ** It is not included "phrase 4" as this phrase was optional.
+NB: ** manual parsing is not included optional "phrase 4", "phrase 4" only runs at startup.
 
 When the database is ready with the parsed data, "data_loader" table will have "false" status for "Movie Data Loading" so that the data parsing & loading never happens again.
 
