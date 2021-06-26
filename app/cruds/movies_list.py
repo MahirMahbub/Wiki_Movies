@@ -38,3 +38,9 @@ class MoviesDataCrud(AbstractMoviesDataCrud):
 
     def get_query(self):
         return self.session.query(models.MovieData)
+
+    def update_rating_and_rater(self, rating: float, rater: int, film_name):
+        return self.session.query(models.MovieData).filter(models.MovieData.film_name == film_name).update({
+            "average_rating": rating,
+            "number_of_rater": rater
+        })

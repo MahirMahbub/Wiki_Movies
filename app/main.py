@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 
 from app.create_data import CreateData
 from app.cruds.data_loader import DataLoaderCrud
+from app.custom_classes.rating_extractor import RatingExtractor
 from app.routes import movies
 from db.database import SessionLocal
 
@@ -58,13 +59,25 @@ app.include_router(
 db = SessionLocal()
 
 
-# if __name__ == '__main__':
-#     uvicorn.run(app='app:app', reload=True, port="7003", host="0.0.0.0")
+
 @app.on_event("startup")
 async def startup_event():
     is_to_load = DataLoaderCrud(session=db).get(activity_name="Movie Data Loading")
     if is_to_load is not None:
         if is_to_load.status==True:
-            CreateData.get_instance().get_chain_of_responsibility()
-            DataLoaderCrud(session=db).update_status(activity_name="Movie Data Loading", status=False)
-            db.commit()
+            try:
+                CreateData.get_instance().get_chain_of_responsibility()
+                DataLoaderCrud(session=db).update_status(activity_name="Movie Data Loading", status=False)
+                db.commit()
+            except Exception as e:
+                print(e)
+    is_to_load_rating = DataLoaderCrud(session=db).get(activity_name="Movie Rating Loading")
+    if is_to_load_rating is not None:
+        if is_to_load_rating.status==True:
+            try:
+                RatingExtractor(session=db).execute()
+            except Exception as e:
+                print(e)
+
+# if __name__ == '__main__':
+#     uvicorn.run(app='app:app', reload=True, port="7003", host="0.0.0.0")
