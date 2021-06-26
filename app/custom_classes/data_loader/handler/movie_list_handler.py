@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Union
 from typing import Any
 from typing import List, Dict
 
@@ -13,7 +13,7 @@ from app.custom_classes.data_loader.handler.abstract_handler import AbstractHand
 
 
 class MovieListHandler(AbstractHandler):
-    def execute(self, request_data: str) -> List[Dict[Any, Any]]:
+    def execute(self, request_data: str, is_dataframe: bool = False) -> Union[List[Dict[Any, Any]], DataFrame]:
         request_handler: request = requests.get(request_data)
         html_table: Tag = BeautifulSoup(features="lxml", markup=request_handler.text).find('table')
         request_handler.close()
@@ -36,6 +36,8 @@ class MovieListHandler(AbstractHandler):
 
         wiki_films_df['Wiki Link'] = links
         wiki_films_df["id"] = [i for i in range(1, len(links) + 1)]
+        if is_dataframe:
+            return wiki_films_df
         return wiki_films_df.to_dict(orient='records')
 
     def handle(self, request_data: Any):

@@ -14,6 +14,7 @@ from app.custom_classes.data_loader.handler.abstract_handler import AbstractHand
 class MovieDetailsHandler(AbstractHandler):
     def execute(self, request_data: List[Dict[Any, Any]]) -> Tuple[List[Dict[Any, Any]], List[Dict[Any, Any]]]:
         movies_details_list: List[Dict[Any, Any]] = []
+        print(len(request_data))
         for movie_data in request_data:
             print("Parsing data for: ", movie_data["Film"])
             movies_details_list.append(self.get_film_details(movie_data['Wiki Link']))
