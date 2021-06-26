@@ -92,6 +92,6 @@ app/custom_classes/data_loader/*
 
 Used Chain of Responsibility, Repository.
 
-For API details please see: https://github.com/MahirMahbub/Wiki_Movies/blob/master/API%20Details.pdf
+For API details please see: https://github.com/MahirMahbub/Wiki_Movies/blob/master/API%20Doc.pdf
 
 
