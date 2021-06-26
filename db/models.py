@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String, Float
 
 from db.database import Base
 
@@ -18,6 +18,8 @@ class MovieData(Base):
     awards = Column(String)
     nomination = Column(String)
     wiki_url = Column(String)
+    average_rating = Column(Float, nullable=True)
+    number_of_rater = Column(Integer, nullable=True)
 
 
 class MovieDetails(Base):
