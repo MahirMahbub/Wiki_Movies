@@ -73,15 +73,24 @@ Update Db and insert master data:
 python run_db.py auto
 python run_db.py data
 
-# The parsing of data and  loading of data to the database will happen while starting the fastapi server
+# The parsing of data and  loading of data to the database will happen while starting the fastapi server when "data_loader" table will have "true" status for "Movie Data Loading"
 
-For manual upload of data with parsing  
+For manual upload of data with parsing run in docker terminal:
 
-python serve.py
+python parse.py 
+
+NB: ** It is not included "phrase 4" as this phrase was optional.
 
 When the database is ready with the parsed data, "data_loader" table will have "false" status for "Movie Data Loading" so that the data parsing & loading never happens again.
 
+# Phrase 4 will run while starting the fastapi server when "data_loader" table will have "true" status for "Movie Rating Loading"
+
+change the db value for enable/disable phrase 4. 
+
+did not exposed an api for "data_loader" table's status change, because of maintaining exact api deliverables by the assignment requirements.
+
 # API endpoints
+
 http://localhost:7003/movies?count={}&page={}
 
 http://localhost:7003/movie/{}
