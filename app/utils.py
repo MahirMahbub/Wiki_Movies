@@ -17,5 +17,4 @@ def catch_not_implemented_exception(fn):
             raise HTTPException(status_code=status.HTTP_501_NOT_IMPLEMENTED,
                                 detail="Method Not Implemented Yet")
 
-
     return wrapper

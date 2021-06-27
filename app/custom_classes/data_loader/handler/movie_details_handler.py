@@ -13,20 +13,20 @@ from app.custom_classes.data_loader.handler.abstract_handler import AbstractHand
 
 class MovieDetailsHandler(AbstractHandler):
     def execute(self, request_data: List[Dict[Any, Any]]) -> Tuple[List[Dict[Any, Any]], List[Dict[Any, Any]]]:
-        movies_details_list: List[Dict[Any, Any]] = []
+        movies_details_list: List[Dict[str, Any]] = []
         print(len(request_data))
-        for movie_data in request_data:
+        for movie_data in request_data[150: 200]:
             print("Parsing data for: ", movie_data["Film"])
             movies_details_list.append(self.get_film_details(movie_data['Wiki Link']))
         pprint(movies_details_list)
-        return movies_details_list, request_data
+        return movies_details_list, request_data[150: 200]
 
     @staticmethod
-    def get_film_details(url: str) -> Dict[Any, Any]:
+    def get_film_details(url: str) -> Dict[str, Any]:
         if url == "":
             return {}
         request_handler: request = requests.get(url)
-        movie_details: Dict[Any, Any] = {}
+        movie_details: Dict[str, Any] = {}
         html_table = MovieDetailsHandler.get_table_data_from_html(request_handler)
         if html_table is None:
             return {}
@@ -50,7 +50,7 @@ class MovieDetailsHandler(AbstractHandler):
         return movie_details
 
     @staticmethod
-    def clean_unicode_text(obj_: Any):
+    def clean_unicode_text(obj_: Any) -> Any:
         return obj_.text.replace(u'\xa0', u' ')
 
     @staticmethod
@@ -84,7 +84,7 @@ class MovieDetailsHandler(AbstractHandler):
         return _property_value_list
 
     @staticmethod
-    def get_table_data_from_html(request_handler):
+    def get_table_data_from_html(request_handler: requests) -> Tag:
         html_table: Tag = BeautifulSoup(features="lxml", markup=request_handler.text). \
             find("table",
                  {"class": "infobox vevent"})
