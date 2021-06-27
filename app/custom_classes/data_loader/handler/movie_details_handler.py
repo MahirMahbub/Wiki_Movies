@@ -15,11 +15,11 @@ class MovieDetailsHandler(AbstractHandler):
     def execute(self, request_data: List[Dict[Any, Any]]) -> Tuple[List[Dict[Any, Any]], List[Dict[Any, Any]]]:
         movies_details_list: List[Dict[str, Any]] = []
         print(len(request_data))
-        for movie_data in request_data[150: 200]:
+        for movie_data in request_data:
             print("Parsing data for: ", movie_data["Film"])
             movies_details_list.append(self.get_film_details(movie_data['Wiki Link']))
         pprint(movies_details_list)
-        return movies_details_list, request_data[150: 200]
+        return movies_details_list, request_data
 
     @staticmethod
     def get_film_details(url: str) -> Dict[str, Any]:
