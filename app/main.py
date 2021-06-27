@@ -39,15 +39,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# fastapi_users = FastAPIUsers(
-#     user_db,
-#     [jwt_authentication],
-#     User,
-#     UserCreate,
-#     UserUpdate,
-#     UserDB,
-# )
-
 app = FastAPI()
 
 # API routes
@@ -64,7 +55,7 @@ db = SessionLocal()
 async def startup_event():
     is_to_load = DataLoaderCrud(session=db).get(activity_name="Movie Data Loading")
     if is_to_load is not None:
-        if is_to_load.status==True:
+        if is_to_load.status:
             try:
                 CreateData.get_instance().get_chain_of_responsibility()
                 DataLoaderCrud(session=db).update_status(activity_name="Movie Data Loading", status=False)
@@ -73,9 +64,11 @@ async def startup_event():
                 print(e)
     is_to_load_rating = DataLoaderCrud(session=db).get(activity_name="Movie Rating Loading")
     if is_to_load_rating is not None:
-        if is_to_load_rating.status==True:
+        if is_to_load_rating.status:
             try:
                 RatingExtractor(session=db).execute()
+                DataLoaderCrud(session=db).update_status(activity_name="Movie Rating Loading", status=False)
+                db.commit()
             except Exception as e:
                 print(e)
 

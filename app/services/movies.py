@@ -6,7 +6,7 @@ import humps
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from sqlalchemy_pagination import paginate
+from sqlalchemy_pagination import paginate, Page
 from starlette import status
 
 from app.cruds.movies_details import MoviesDetailsCrud
@@ -16,11 +16,11 @@ from db import models
 
 class Movies(object):
 
-    def get_paginated_movies_list(self, db, count, page):
+    def get_paginated_movies_list(self, db: Session, count: int, page: int):
         try:
             crud_movies_list_object = MoviesDataCrud(session=db)
             movie_data_query_object = crud_movies_list_object.get_query()
-            __pagination_obj = paginate(movie_data_query_object, page=page, page_size=count)
+            __pagination_obj: Page = paginate(movie_data_query_object, page=page, page_size=count)
         except AttributeError as e:
             logging.exception("Attribute Error occurred")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -64,7 +64,7 @@ class Movies(object):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail="Error occurred")
 
-    def __get_paginated_movies_list_with_movie_details(self, movie_data_list: List[Dict[str, Any]], db: Session):
+    def __get_paginated_movies_list_with_movie_details(self, movie_data_list: List[models.MovieData], db: Session):
         movie_details_data_list: List[Dict[str, Any]] = []
         for movie_data in movie_data_list:
             movie_id: int = movie_data.id
@@ -72,7 +72,7 @@ class Movies(object):
             movie_details_data_list.append(movie_dict)
         return movie_details_data_list
 
-    def __get_manipulated_movie_info(self, db, movie_data, movie_id):
+    def __get_manipulated_movie_info(self, db: Session, movie_data: models.MovieData, movie_id: int):
         movie_details: List[models.MovieDetails] = MoviesDetailsCrud(db).get_by_movie_id(movie_id)
         movie_dict = self.__data_maker(movie_data=movie_data, movie_details=movie_details)
         return movie_dict

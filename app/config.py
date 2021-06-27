@@ -3,7 +3,6 @@ import os
 from typing import List
 
 
-
 class AppConfig:
     # App name
     APP_NAME = "EDN-Campaign"
