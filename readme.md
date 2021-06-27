@@ -100,7 +100,7 @@ For Source Code for Data Parsing and Data Upload to database, see:
 
 app/custom_classes/*
 
-Used Chain of Responsibility, Repository.
+Used Chain of Responsibility, Singletone, Repository.
 
 For API details please see: https://github.com/MahirMahbub/Wiki_Movies/blob/master/API%20Doc.pdf
 
