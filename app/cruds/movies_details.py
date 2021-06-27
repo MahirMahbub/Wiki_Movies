@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+from sqlalchemy.orm import Session
+
 from app.schemas import MovieDetailCreate, MovieDetailsGet
 from db import models
 
@@ -12,15 +14,15 @@ class AbstractMoviesDetailsCrud(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, reference) -> MovieDetailsGet:
+    def get(self, reference):
         raise NotImplementedError
 
 
 class MoviesDetailsCrud(AbstractMoviesDetailsCrud):
-    def __init__(self, session):
+    def __init__(self, session: Session):
         self.session = session
 
-    def add(self, movie_schema: MovieDetailCreate, single_push: bool = True):
+    def add(self, movie_schema: MovieDetailCreate, single_push: bool = True) -> models.MovieDetails:
         movie_details_object: models.MovieDetails = models.MovieDetails(property_name=movie_schema.property_name,
                                                                         value=movie_schema.value,
                                                                         url=movie_schema.url,
@@ -29,13 +31,13 @@ class MoviesDetailsCrud(AbstractMoviesDetailsCrud):
             self.session.add(movie_details_object)
         return movie_details_object
 
-    def get(self, id_) -> MovieDetailsGet:
+    def get(self, id_: int) -> models.MovieDetails:
         return self.session.query(models.MovieDetails).filter(models.MovieDetails.id == id_).first()
 
-    def get_by_movie_id(self, movie_id) -> List[models.MovieDetails]:
+    def get_by_movie_id(self, movie_id: int) -> List[models.MovieDetails]:
         return self.session.query(models.MovieDetails).filter(models.MovieDetails.movie_id == movie_id).all()
 
-    def add_list(self, movie_schema_list: List[MovieDetailCreate]):
+    def add_list(self, movie_schema_list: List[MovieDetailCreate]) -> None:
         movie_object_list: List[models.MovieDetails] = []
         for movie_schema in movie_schema_list:
             movie_object_list.append(self.add(movie_schema=movie_schema, single_push=False))
